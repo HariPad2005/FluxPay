@@ -20,8 +20,7 @@ import {
   closeChannel as sessionCloseChannel,
 } from './session';
 import { sendPayment } from './payments';
-import dotenv from 'dotenv';
-dotenv.config();  
+import 'dotenv/config';  
 
 export class YellowClient {
   ws: WebSocket;
@@ -104,6 +103,7 @@ export class YellowClient {
       this.ws.addEventListener('message', handler);
 
       if (this.ws.readyState === WebSocket.OPEN) {
+        console.log('[Yellow] Sending auth request');
         this.ws.send(authRequestMsg);
       } else {
         this.ws.onopen = () => this.ws.send(authRequestMsg);
@@ -117,6 +117,7 @@ export class YellowClient {
         const msg = parseMessage(event);
         if (msg && msg.type === 'get_ledger_balances') {
           const balances = msg.payload.ledger_balances;
+          console.log("balances", balances);
           const bal = balances.find((b: any) => b.asset === asset);
           this.ws.removeEventListener('message', handler);
           resolve(bal ? bal.amount : '0');
@@ -157,6 +158,7 @@ export async function initYellow() {
 
   const client = new YellowClient(ws, account, walletClient, publicClient);
   await client.authenticate();
+  await client.getBalance();
 
   return client;
 }

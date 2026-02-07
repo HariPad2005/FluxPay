@@ -15,6 +15,6 @@ export function useYellow() {
       .catch(setError);
   }, []);
 
-  console.error('Yellow Client Error:', error);
+  // console.error('Yellow Client Error:', error);
   return client;
 }
