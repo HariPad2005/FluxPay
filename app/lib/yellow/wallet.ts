@@ -1,18 +1,26 @@
-export async function setupMessageSigner() {
-  if (!window.ethereum) throw new Error('Install MetaMask');
 
-  const accounts = await window.ethereum.request({
-    method: 'eth_requestAccounts',
+declare global {
+    interface Window {
+        ethereum: any;
+    }
+}
+
+import { createWalletClient, custom } from 'viem';
+import { sepolia } from 'viem/chains';
+
+export async function setupWalletClient() {
+  if (typeof window === 'undefined' || !window.ethereum) {
+    throw new Error('Install MetaMask');
+  }
+
+  // Request accounts directly first to ensure we have one
+  const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+  const walletClient = createWalletClient({
+    account,
+    chain: sepolia,
+    transport: custom(window.ethereum),
   });
 
-  const userAddress = accounts[0];
-
-  const messageSigner = async (message: string) => {
-    return await window.ethereum.request({
-      method: 'personal_sign',
-      params: [message, userAddress],
-    });
-  };
-
-  return { userAddress, messageSigner };
+  return { walletClient, account };
 }

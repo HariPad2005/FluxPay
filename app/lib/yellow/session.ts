@@ -1,30 +1,50 @@
-import { createAppSessionMessage } from '@erc7824/nitrolite';
+import {
+  createCreateChannelMessage,
+  createResizeChannelMessage,
+  createCloseChannelMessage,
+} from '@erc7824/nitrolite';
 
-export async function createPaymentSession(
+export async function openChannel(
   ws: WebSocket,
-  messageSigner,
-  userAddress: string,
-  partnerAddress: string
+  sessionSigner: any,
+  chainId: number = 11155111,
+  token: string
 ) {
-  const appDefinition = {
-    protocol: 'payment-app-v1',
-    participants: [userAddress, partnerAddress],
-    weights: [50, 50],
-    quorum: 100,
-    challenge: 0,
-    nonce: Date.now(),
-  };
+  const createMsg = await createCreateChannelMessage(sessionSigner, {
+    chain_id: chainId,
+    token: token as `0x${string}`,
+  });
+  ws.send(createMsg);
+  console.log('➡️ Open channel request sent');
+}
 
-  const allocations = [
-    { participant: userAddress, asset: 'usdc', amount: '800000' },
-    { participant: partnerAddress, asset: 'usdc', amount: '200000' },
-  ];
+export async function resizeChannel(
+  ws: WebSocket,
+  sessionSigner: any,
+  channelId: string,
+  amount: bigint,
+  destination: string
+) {
+  const msg = await createResizeChannelMessage(sessionSigner, {
+    channel_id: channelId as `0x${string}`,
+    allocate_amount: amount,
+    funds_destination: destination as `0x${string}`,
+  });
+  ws.send(msg);
+  console.log('➡️ Resize channel request sent');
+}
 
-  const sessionMessage = await createAppSessionMessage(
-    messageSigner,
-    [{ definition: appDefinition, allocations }]
+export async function closeChannel(
+  ws: WebSocket,
+  sessionSigner: any,
+  channelId: string,
+  userAddress: string
+) {
+  const msg = await createCloseChannelMessage(
+    sessionSigner,
+    channelId as `0x${string}`,
+    userAddress as `0x${string}`
   );
-
-  ws.send(sessionMessage);
-  console.log('✅ Session created');
+  ws.send(msg);
+  console.log('➡️ Close channel request sent');
 }

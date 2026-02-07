@@ -1,6 +1,6 @@
 'use client';
 
-import { useYellow } from '@/hooks/useYellow';
+import { useYellow } from './lib/hooks/useYellow';
 
 export default function Home() {
   const yellow = useYellow();
@@ -9,11 +9,10 @@ export default function Home() {
 
   return (
     <div>
-      <button onClick={() => yellow.createSession('0xPartnerAddress')}>
-        Create Session
+      <button onClick={() => yellow.openChannel('0x941845F7425141d19bE9db618C525e333C11b1c2')}>
+        Open Channel
       </button>
-
-      <button onClick={() => yellow.pay(100000, '0xPartnerAddress')}>
+      <button onClick={() => yellow.pay(100000, '0x941845F7425141d19bE9db618C525e333C11b1c2')}>
         Send Payment
       </button>
     </div>

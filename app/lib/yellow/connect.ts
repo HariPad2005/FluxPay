@@ -1,5 +1,5 @@
-import WebSocket from 'ws';
-import { parseRPCResponse } from '@erc7824/nitrolite';
+
+import { parseAnyRPCResponse } from '@erc7824/nitrolite';
 
 export function connectClearnode(wsUrl: string) {
   const ws = new WebSocket(wsUrl);
@@ -9,8 +9,8 @@ export function connectClearnode(wsUrl: string) {
   };
 
   ws.onmessage = (event) => {
-    const message = parseRPCResponse(event.data.toString());
-    console.log('📥 Message:', message);
+    const message = parseAnyRPCResponse(event.data.toString());
+    console.log('📥haris Message:', message);
   };
 
   ws.onerror = console.error;

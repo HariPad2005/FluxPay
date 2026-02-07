@@ -1,25 +1,16 @@
+import { createTransferMessage } from '@erc7824/nitrolite';
+
 export async function sendPayment(
   ws: WebSocket,
-  messageSigner,
-  amount: number,
+  sessionSigner: any,
+  amount: string,
   recipient: string,
-  getCurrentUserAddress
+  asset: string = 'ytest.usd'
 ) {
-  const paymentData = {
-    type: 'payment',
-    amount: amount.toString(),
-    recipient,
-    timestamp: Date.now(),
-  };
-
-  const signature = await messageSigner(JSON.stringify(paymentData));
-
-  const signedPayment = {
-    ...paymentData,
-    signature,
-    sender: await getCurrentUserAddress(),
-  };
-
-  ws.send(JSON.stringify(signedPayment));
+  const transferMsg = await createTransferMessage(sessionSigner, {
+    destination: recipient as `0x${string}`,
+    allocations: [{ asset, amount }],
+  });
+  ws.send(transferMsg);
   console.log('➡️ Payment sent');
 }
