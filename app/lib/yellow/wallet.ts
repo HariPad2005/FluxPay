@@ -16,19 +16,11 @@ declare global {
   }
 }
 
-/* ======================================================
-   🌐 Public Client (for ENS + reads)
-====================================================== */
 
 export const publicClient = createPublicClient({
   chain: sepolia,
   transport: http('https://rpc.sepolia.org'),
 })
-
-/* ======================================================
-   🔹 ENS HELPERS (viem native)
-   Docs: https://docs.ens.domains/web/quickstart
-====================================================== */
 
 /**
  * Reverse resolve address -> ENS name
@@ -80,9 +72,6 @@ export async function getEnsProfile(address: `0x${string}`) {
   }
 }
 
-/* ======================================================
-   🔹 MAIN WALLET SETUP
-====================================================== */
 
 export async function setupWalletClient() {
   if (typeof window === 'undefined' || !window.ethereum) {
@@ -128,20 +117,17 @@ export async function setupWalletClient() {
     transport: custom(window.ethereum),
   })
 
-  /* ---------- ENS lookup ---------- */
   // const ens = await getEnsProfile(account)
   const { data: name } = useEnsName({ address, chainId: 11155111 })
   const { data: avatar } = useEnsAvatar({ name, chainId: 11155111 })
-  // console.log('ENS Profile:', name, avatar)
+  console.log('ENS Profile:', name, avatar)
 
   return {
     walletClient,
     publicClient,
 
     account,
-
-    /* 🔥 NEW */
-    /* ensName: name,
-    ensAvatar: avatar, */
+    ensName: name,
+    ensAvatar: avatar,
   }
 }

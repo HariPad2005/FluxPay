@@ -42,11 +42,6 @@ export class YellowClient {
   isAuthenticated = false;
   lastChannelId?: string;
 
-
-  /* ======================================================
-     CONSTRUCTOR
-  ====================================================== */
-
   constructor(
     ws: WebSocket,
     account: string,
@@ -82,11 +77,6 @@ export class YellowClient {
     this.sessionSigner = createECDSAMessageSigner(sessionPrivateKey);
 
     console.log(`[Yellow] Initialized for: ${this.account}`);
-
-    /* ======================================================
-       🔥 GLOBAL CHANNEL LISTENER (CRITICAL)
-       Handles ALL Nitro channel events automatically
-    ====================================================== */
 
     this.ws.addEventListener('message', async (event) => {
       const msg = parseMessage(event);
@@ -132,27 +122,6 @@ export class YellowClient {
         console.log('✅ Channel funded');
       }
 
-      /* ---------- Close → FINAL SETTLEMENT ---------- */
-      // if (msg.type === 'close_channel') {
-      //   console.log('🟡 Node signed close → settling on-chain');
-
-      //   const finalState = {
-      //     intent: msg.payload.state.intent,
-      //     version: BigInt(msg.payload.state.version),
-      //     data: msg.payload.state.state_data,
-      //     allocations: msg.payload.state.allocations.map((a: any) => ({
-      //       destination: a.destination,
-      //       token: a.token,
-      //       amount: BigInt(a.amount),
-      //     })),
-      //     channelId: msg.payload.channel_id,
-      //     serverSignature: msg.payload.server_signature,
-      //   };
-
-      //   await this.finalizeClose(finalState);
-
-      // }
-
       // Handle Transfer
       if (msg.type === 'transfer') {
         console.log('✅ Off-chain payment successful (ledger updated)');
@@ -169,10 +138,6 @@ export class YellowClient {
       // }
     });
   }
-
-  /* ======================================================
-     AUTH
-  ====================================================== */
 
   async authenticate() {
     return new Promise<void>(async (resolve) => {
@@ -228,9 +193,12 @@ export class YellowClient {
     });
   }
 
-  /* ======================================================
-     BALANCES
-  ====================================================== */
+
+  // Helper to convert raw amount to USDC (6 decimals)
+  private formatUSDC(rawAmount: string): string {
+    const amount = parseFloat(rawAmount) / 1_000_000;
+    return amount.toFixed(2);
+  }
 
   async getBalance(asset: string = 'ytest.usd'): Promise<string> {
     return new Promise((resolve) => {
@@ -241,13 +209,15 @@ export class YellowClient {
 
           const balances = msg.payload.ledger_balances;
 
-          console.log('\n📊 Ledger Balances');
+          console.log('\n📊 Ledger Balances (USDC)');
           balances.forEach((b: any) => {
-            console.log(`   ${b.asset}: ${b.amount}`);
+            const usdcAmount = this.formatUSDC(b.amount);
+            console.log(`   ${b.asset}: ${usdcAmount} USDC`);
           });
 
           const bal = balances.find((b: any) => b.asset === asset);
-          resolve(bal?.amount || '0');
+          const usdcBalance = bal ? this.formatUSDC(bal.amount) : '0.00';
+          resolve(usdcBalance);
         }
       };
 
@@ -260,7 +230,7 @@ export class YellowClient {
     });
   }
 
-  async getRecipientBalance(recipient: string, asset: string = 'ytest.usd') {
+  async getRecipientBalance(recipient: string, asset: string = 'ytest.usd'): Promise<string> {
     return new Promise((resolve) => {
       const handler = (event: MessageEvent) => {
         const msg = parseMessage(event);
@@ -270,16 +240,18 @@ export class YellowClient {
 
           const balances = msg.payload.ledger_balances;
 
-          console.log(`\n📊 Recipient (${recipient}) Ledger`);
+          console.log(`\n📊 Recipient (${recipient}) Ledger (USDC)`);
           if (!balances.length) {
-            console.log('   ytest.usd: 0');
+            console.log('   ytest.usd: 0.00 USDC');
           } else {
             balances.forEach((b: any) => {
-              console.log(`   ${b.asset}: ${b.amount}`);
+              const usdcAmount = this.formatUSDC(b.amount);
+              console.log(`   ${b.asset}: ${usdcAmount} USDC`);
             });
           }
           const bal = balances.find((b: any) => b.asset === asset);
-          resolve(bal?.amount || '0');
+          const usdcBalance = bal ? this.formatUSDC(bal.amount) : '0.00';
+          resolve(usdcBalance);
         }
       };
 
@@ -292,10 +264,6 @@ export class YellowClient {
     });
   }
 
-
-  /* ======================================================
-     NITRO (ON-CHAIN OPS)
-  ====================================================== */
 
   async deposit(token: `0x${string}`, amount: bigint) {
     console.log('🟡 Depositing...');
@@ -373,9 +341,6 @@ export class YellowClient {
     return txHash;
   }
 
-  /* ======================================================
-     WRAPPERS (UNCHANGED)
-  ====================================================== */
 
   async openChannel(token: string) {
     return sessionOpenChannel(this.ws, this.sessionSigner, 11155111, token);
@@ -425,10 +390,7 @@ export class YellowClient {
     return sendPayment(this.ws, this.sessionSigner, amount.toString(), recipient);
   }
 
-  /* ======================================================
-   FLOW EXECUTOR (SEQUENTIAL STEPS)
-   Call this from frontend
-====================================================== */
+  /*execute the payment*/
 
   async executePaymentFlow(
     token: `0x${string}`,
@@ -516,11 +478,10 @@ export class YellowClient {
 
 }
 
-/* ======================================================
-   INIT
-====================================================== */
+/*init_yellow*/
 
 export async function initYellow() {
+  // const { walletClient, account } = await setupWalletClient();
   const { walletClient, account, ensName, ensAvatar } = await setupWalletClient();
 
   const ws = connectClearnode('wss://clearnet-sandbox.yellow.com/ws');
@@ -530,6 +491,7 @@ export async function initYellow() {
     transport: http(process.env.ALCHEMY_RPC_URL),
   });
 
+  // const client = new YellowClient(ws, account, walletClient, publicClient);
   const client = new YellowClient(ws, account, walletClient, publicClient, ensName, ensAvatar);
 
   await client.authenticate();
