@@ -1,353 +1,202 @@
 'use client';
 
-import { useYellow } from './lib/hooks/useYellow';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Briefcase, Users, Zap, Shield, TrendingUp, Clock, Sparkles, Award } from 'lucide-react';
 
 export default function Home() {
-  const yellow = useYellow();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [status, setStatus] = useState<string>('');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handlePayment = async () => {
-    setIsProcessing(true);
-    setStatus('Initiating payment flow...');
-
-    try {
-      await yellow?.executePaymentFlow(
-        '0xDB9F293e3898c9E5536A3be1b0C56c89d2b32DEb',
-        1n,
-        1n,
-        195,
-        '0xa4200162309D1F65CC1eadDe023ba42Ccfb6eD16'
-      );
-      setStatus('Payment completed successfully! 🎉');
-    } catch (error) {
-      setStatus('Payment failed. Please try again.');
-      console.error(error);
-    } finally {
-      setTimeout(() => setIsProcessing(false), 2000);
-    }
-  };
-
-  if (!yellow) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative z-10">
-        <div className="glass rounded-3xl p-12 max-w-md w-full mx-4 animate-fade-in">
-          <div className="flex flex-col items-center space-y-6">
-            {/* Enhanced Loading Spinner */}
-            <div className="relative w-24 h-24">
-              <div className="absolute inset-0 w-24 h-24 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-24 h-24 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-              <div className="absolute inset-0 w-24 h-24 border-4 border-pink-500/10 border-t-pink-500 rounded-full animate-spin" style={{ animationDuration: '2s' }}></div>
-              {/* Pulsing center */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full animate-pulse"></div>
-              </div>
-            </div>
-
-            <div className="text-center space-y-3">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Connecting to Yellow Network
-              </h2>
-              <p className="text-gray-400">Initializing secure payment channel...</p>
-              <div className="flex items-center justify-center space-x-1 pt-2">
-                <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const router = useRouter();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative z-10">
-      {/* Floating particles effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${5 + Math.random() * 10}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.15),transparent_50%)]"></div>
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-96 h-96 bg-fuchsia-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-violet-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div className={`max-w-5xl w-full transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        {/* Header with enhanced styling */}
-        <div className="text-center mb-16 relative">
-          <div className="absolute inset-0 flex items-center justify-center opacity-20 blur-3xl">
-            <div className="w-96 h-96 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full"></div>
-          </div>
-          <h1 className="text-7xl md:text-8xl font-black mb-6 relative">
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-              FluxPay
-            </span>
-          </h1>
-          <p className="text-2xl text-gray-300 font-light tracking-wide">Lightning-fast payments on Yellow Network</p>
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-green-400 font-medium">Live on Mainnet</span>
+      {/* Header */}
+      <div className="relative border-b border-purple-900/50 bg-slate-950/50 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/50">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-400 bg-clip-text text-transparent">
+                  FluxPay
+                </h1>
+                <p className="text-xs text-purple-400/70">Performance-Based Payroll</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+              <p className="text-sm text-purple-400/70">Powered by Yellow Network</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Main Card with enhanced design */}
-        <div className="glass rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-2xl border border-white/10 hover:border-white/20 transition-all duration-500">
-          {/* Stats Grid with enhanced animations */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div className="glass rounded-2xl p-6 border-l-4 border-indigo-500 hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20 transition-all duration-300 group">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Network</p>
-                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-indigo-400 transition-colors">Yellow</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-indigo-500/50">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass rounded-2xl p-6 border-l-4 border-purple-500 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 group">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Status</p>
-                  <p className="text-3xl font-bold text-green-400 mt-2 flex items-center">
-                    <span className="w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulse shadow-lg shadow-green-400/50"></span>
-                    Ready
-                  </p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-purple-500/50">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass rounded-2xl p-6 border-l-4 border-pink-500 hover:scale-105 hover:shadow-xl hover:shadow-pink-500/20 transition-all duration-300 group">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Amount</p>
-                  <p className="text-3xl font-bold text-white mt-2 group-hover:text-pink-400 transition-colors">5 Tokens</p>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-pink-500/50">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+      <div className="relative max-w-6xl mx-auto px-6 py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/30 border border-purple-500/30 backdrop-blur-sm mb-6">
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span className="text-sm text-purple-300">Instant Off-Chain Payments</span>
           </div>
+          <h2 className="text-6xl font-black mb-6 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-400 bg-clip-text text-transparent leading-tight">
+            Instant Payroll,<br />Zero Delays
+          </h2>
+          <p className="text-xl text-purple-300/80 max-w-2xl mx-auto">
+            Performance-based compensation with instant off-chain payments and daily settlements on Yellow Network
+          </p>
+        </div>
 
-          {/* Payment Details with enhanced design */}
-          <div className="glass rounded-2xl p-8 mb-8 border border-white/5 hover:border-white/10 transition-all duration-300">
-            <h3 className="text-xl font-bold mb-6 flex items-center text-white">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mr-3 shadow-lg shadow-indigo-500/30">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+        {/* Features Grid */}
+        <div className="grid grid-cols-3 gap-6 mb-20">
+          {[
+            { icon: Zap, title: 'Instant Payments', desc: 'Off-chain payments settle in seconds', color: 'from-purple-500 to-fuchsia-500' },
+            { icon: Shield, title: 'Secure Channels', desc: 'State channels ensure trustless transactions', color: 'from-fuchsia-500 to-pink-500' },
+            { icon: TrendingUp, title: 'Performance-Based', desc: 'Pay for completed tasks, not just hours', color: 'from-emerald-500 to-green-500' }
+          ].map((feature, i) => (
+            <div key={i} className="group relative overflow-hidden rounded-xl bg-slate-900/50 border border-purple-500/20 backdrop-blur-sm p-6 hover:border-purple-500/40 transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className={`relative w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg`}>
+                <feature.icon className="w-7 h-7 text-white" />
               </div>
-              Payment Details
-            </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center py-3 border-b border-gray-700/30 hover:border-gray-600/50 transition-colors group">
-                <span className="text-gray-400 font-medium">Token Address</span>
-                <span className="text-sm font-mono text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg group-hover:bg-indigo-500/20 transition-colors">0xDB9F...2DEb</span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-700/30 hover:border-gray-600/50 transition-colors group">
-                <span className="text-gray-400 font-medium">Recipient</span>
-                <span className="text-sm font-mono text-purple-400 bg-purple-500/10 px-3 py-1 rounded-lg group-hover:bg-purple-500/20 transition-colors">0xa420...6eD16</span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-gray-700/30 hover:border-gray-600/50 transition-colors group">
-                <span className="text-gray-400 font-medium">Deposit Amount</span>
-                <span className="text-white font-bold text-lg group-hover:text-pink-400 transition-colors">50 Tokens</span>
-              </div>
-              <div className="flex justify-between items-center py-3 group">
-                <span className="text-gray-400 font-medium">Transfer Amount</span>
-                <span className="text-white font-bold text-lg group-hover:text-pink-400 transition-colors">5 Tokens</span>
-              </div>
+              <h3 className="relative font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors">{feature.title}</h3>
+              <p className="relative text-sm text-purple-400/70">{feature.desc}</p>
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Status Message with enhanced styling */}
-          {status && (
-            <div className={`glass rounded-2xl p-5 mb-8 border-l-4 animate-slide-in ${status.includes('success') ? 'border-green-500 bg-green-500/5' :
-              status.includes('failed') ? 'border-red-500 bg-red-500/5' :
-                'border-yellow-500 bg-yellow-500/5'
-              }`}>
-              <div className="flex items-center gap-3">
-                {status.includes('success') && (
-                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Role Selection */}
+        <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto mb-20">
+          {/* Manager Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-slate-900/50 border-2 border-purple-500/20 hover:border-purple-500 backdrop-blur-sm p-8 transition-all hover:scale-[1.02]">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative text-center mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-purple-500/50 group-hover:scale-110 transition-transform">
+                <Briefcase className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">Manager</h3>
+              <p className="text-sm text-purple-400/70">Manage teams and process instant payments</p>
+            </div>
+
+            <div className="relative space-y-3 mb-6">
+              {['Create workspaces & assign tasks', 'Open payment channels', 'Approve & pay instantly', 'Daily on-chain settlement'].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-purple-500/20 rounded flex items-center justify-center flex-shrink-0 mt-0.5 border border-purple-500/30">
+                    <svg className="w-3 h-3 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                )}
-                <p className="text-base font-medium">{status}</p>
+                  <p className="text-sm text-purple-300/80">{item}</p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => router.push('/manager')}
+              className="relative w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-xl transition-all font-semibold shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50"
+            >
+              Continue as Manager
+            </button>
+          </div>
+
+          {/* Employee Card */}
+          <div className="group relative overflow-hidden rounded-2xl bg-slate-900/50 border-2 border-fuchsia-500/20 hover:border-fuchsia-500 backdrop-blur-sm p-8 transition-all hover:scale-[1.02]">
+            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative text-center mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-fuchsia-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-fuchsia-500/50 group-hover:scale-110 transition-transform">
+                <Award className="w-10 h-10 text-white" />
               </div>
+              <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-fuchsia-300 transition-colors">Employee</h3>
+              <p className="text-sm text-purple-400/70">Complete tasks and receive instant payments</p>
             </div>
-          )}
 
-          {/* Enhanced Action Button */}
-          <button
-            onClick={handlePayment}
-            disabled={isProcessing}
-            className={`
-              w-full py-7 px-8 rounded-2xl font-bold text-xl
-              bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600
-              hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500
-              transform hover:scale-[1.02] active:scale-[0.98]
-              shadow-2xl hover:shadow-3xl
-              disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
-              relative overflow-hidden
-              group
-              transition-all duration-300
-            `}
-          >
-            <span className="relative z-10 flex items-center justify-center gap-3">
-              {isProcessing ? (
-                <>
-                  <svg className="animate-spin h-7 w-7 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Processing Payment...
-                </>
-              ) : (
-                <>
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Execute Payment Flow
-                </>
-              )}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"></div>
-          </button>
-
-          {/* Info Footer with enhanced design */}
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center gap-2 text-sm text-gray-400 bg-white/5 px-6 py-3 rounded-full border border-white/10">
-              <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>Powered by Yellow Network</span>
-              <span className="text-gray-600">•</span>
-              <span>Secure</span>
-              <span className="text-gray-600">•</span>
-              <span>Instant</span>
-              <span className="text-gray-600">•</span>
-              <span>Decentralized</span>
+            <div className="relative space-y-3 mb-6">
+              {['View assigned tasks', 'Mark tasks complete', 'Get paid instantly', 'Track your earnings'].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-fuchsia-500/20 rounded flex items-center justify-center flex-shrink-0 mt-0.5 border border-fuchsia-500/30">
+                    <svg className="w-3 h-3 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-purple-300/80">{item}</p>
+                </div>
+              ))}
             </div>
+
+            <button
+              onClick={() => router.push('/employee')}
+              className="relative w-full px-6 py-3 bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white rounded-xl transition-all font-semibold shadow-lg shadow-fuchsia-500/30 group-hover:shadow-fuchsia-500/50"
+            >
+              Continue as Employee
+            </button>
           </div>
         </div>
 
-        {/* Feature Cards with enhanced design */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-          <div className="glass rounded-2xl p-8 text-center hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 group border border-white/5 hover:border-indigo-500/30">
-            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-xl shadow-indigo-500/30">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h4 className="font-bold text-xl mb-3 text-white group-hover:text-indigo-400 transition-colors">Secure</h4>
-            <p className="text-sm text-gray-400 leading-relaxed">End-to-end encrypted transactions with military-grade security</p>
+        {/* How It Works */}
+        <div className="mb-20">
+          <h3 className="text-3xl font-bold text-white text-center mb-12">How It Works</h3>
+          <div className="grid grid-cols-4 gap-6">
+            {[
+              { num: '1', title: 'Create Workspace', desc: 'Manager sets up workspace and opens payment channel', color: 'from-purple-500 to-fuchsia-500' },
+              { num: '2', title: 'Assign Tasks', desc: 'Create tasks with rewards for employees', color: 'from-fuchsia-500 to-pink-500' },
+              { num: '3', title: 'Complete & Pay', desc: 'Employees complete tasks, get paid instantly off-chain', color: 'from-emerald-500 to-green-500' },
+              { num: '4', title: 'Daily Settlement', desc: 'Close channel and settle on-chain at end of day', color: 'from-amber-500 to-orange-500' }
+            ].map((step, i) => (
+              <div key={i} className="text-center group">
+                <div className={`w-16 h-16 bg-gradient-to-br ${step.color} text-white rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-2xl shadow-xl group-hover:scale-110 transition-transform`}>
+                  {step.num}
+                </div>
+                <h4 className="font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors">{step.title}</h4>
+                <p className="text-sm text-purple-400/70">{step.desc}</p>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className="glass rounded-2xl p-8 text-center hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 group border border-white/5 hover:border-purple-500/30">
-            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-xl shadow-purple-500/30">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h4 className="font-bold text-xl mb-3 text-white group-hover:text-purple-400 transition-colors">Instant</h4>
-            <p className="text-sm text-gray-400 leading-relaxed">Lightning-fast settlement in milliseconds, not minutes</p>
+        {/* Session Info */}
+        <div className="rounded-xl bg-amber-900/20 border border-amber-500/30 backdrop-blur-sm p-6 flex items-center gap-4">
+          <Clock className="w-10 h-10 text-amber-400 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-amber-300 mb-1">Daily Session: Until 3:59 PM IST</h4>
+            <p className="text-sm text-amber-400/70">Employees can complete tasks during active session. Managers can settle channels anytime.</p>
           </div>
+        </div>
+      </div>
 
-          <div className="glass rounded-2xl p-8 text-center hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300 group border border-white/5 hover:border-pink-500/30">
-            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-xl shadow-pink-500/30">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
+      {/* Footer */}
+      <div className="relative border-t border-purple-900/50 bg-slate-950/50 backdrop-blur-xl mt-20">
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+              <p className="text-sm text-purple-400/70">Powered by Yellow Network</p>
             </div>
-            <h4 className="font-bold text-xl mb-3 text-white group-hover:text-pink-400 transition-colors">Low Fees</h4>
-            <p className="text-sm text-gray-400 leading-relaxed">Minimal transaction costs with maximum efficiency</p>
+            <p className="text-sm text-purple-500/50">Built for ETHGlobal</p>
           </div>
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px);
-          }
-          50% {
-            transform: translateY(-40px) translateX(-10px);
-          }
-          75% {
-            transform: translateY(-20px) translateX(5px);
-          }
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
         }
-
-        @keyframes gradient {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
+        .animate-blob {
+          animation: blob 7s infinite;
         }
-
-        @keyframes slide-in {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .animation-delay-2000 {
+          animation-delay: 2s;
         }
-
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
-        }
-
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.5s ease-out;
+        .animation-delay-4000 {
+          animation-delay: 4s;
         }
       `}</style>
     </div>
