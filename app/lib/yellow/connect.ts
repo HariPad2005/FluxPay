@@ -10,7 +10,7 @@ export function connectClearnode(wsUrl: string) {
 
   ws.onmessage = (event) => {
     const message = parseAnyRPCResponse(event.data.toString());
-    console.log('📥haris Message:', message);
+    // console.log('📥haris Message:', message);
   };
 
   ws.onerror = console.error;

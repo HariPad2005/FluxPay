@@ -22,7 +22,7 @@ export default function Home() {
         '0xDB9F293e3898c9E5536A3be1b0C56c89d2b32DEb',
         1n,
         1n,
-        1,
+        195,
         '0xa4200162309D1F65CC1eadDe023ba42Ccfb6eD16'
       );
       setStatus('Payment completed successfully! 🎉');

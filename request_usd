@@ -1,3 +1,0 @@
-curl -XPOST https://clearnet-sandbox.yellow.com/faucet/requestTokens \
-  -H "Content-Type: application/json" \
-  -d '{"userAddress":"0xa4200162309D1F65CC1eadDe023ba42Ccfb6eD16"}'
