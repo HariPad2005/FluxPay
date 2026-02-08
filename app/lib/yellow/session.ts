@@ -14,6 +14,7 @@ export async function openChannel(
     chain_id: chainId,
     token: token as `0x${string}`,
   });
+
   ws.send(createMsg);
   console.log('➡️ Open channel request sent');
 }
@@ -30,6 +31,7 @@ export async function resizeChannel(
     allocate_amount: amount,
     funds_destination: destination as `0x${string}`,
   });
+
   ws.send(msg);
   console.log('➡️ Resize channel request sent');
 }
@@ -45,6 +47,8 @@ export async function closeChannel(
     channelId as `0x${string}`,
     userAddress as `0x${string}`
   );
+
   ws.send(msg);
   console.log('➡️ Close channel request sent');
 }
+
